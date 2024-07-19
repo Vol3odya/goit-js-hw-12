@@ -6,19 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vanilla App Template</title>
     <link rel="stylesheet" href="./css/styles.css" />
+    <link href=" https://cdn.jsdelivr.net/npm/basiclightbox@5.0.4/dist/basicLightbox.min.css " rel="stylesheet">
+    <link rel="stylesheet" href="iziToast.min.css">
   </head>
   <body>
-    <load ="partials/header.html" />
 
-    <section>
-      <h1>Example page title</h1>
-      <!-- Path to images as from index.html file -->
-      <img src="./img/javascript.svg" alt="" />
+    <section class="conteiner">
+      <form class="feedback-form" autocomplete="off">
+        <input type="text" name="text" placeholder="Search images..." autofocus />
+        <button type="submit">Submit</button>
+      </form>
     </section>
 
-    <!-- Loads the specified .html file -->
-    <load ="partials/vite-promo.html" />
+    <section class="conteiner">
+      <ul class="gallery">
 
+      </ul>
+      <button class="buttontwo is-hidden" type="button">Load more</button>
+      <div class="div-js"></div>
+    </section>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="module" src="./main.js"></script>
   </body>
 </html>
