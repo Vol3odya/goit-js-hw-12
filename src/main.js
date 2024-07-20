@@ -31,13 +31,21 @@ function submit(evt) {
     params.q = evt.target.elements.text.value.trim();
     params.page = 1;
     try {
-        masPictures(params).then((res) => { gallery(res, params.page) }).catch((err) => { deleteContent('.div-js'); console.error(err) });
+        masPictures(params).then((res) => { gallery(res, params.page) }).catch((err) => {
+            deleteContent('.div-js');
+            iziToast.show({
+                color: '#ef4040',
+                position: 'topRight',
+                title: 'Error',
+                message: err.message
+            })
+        });
     } catch (err) {
         iziToast.show({
             color: '#ef4040',
             position: 'topRight',
             title: 'Error',
-            message: err
+            message: err.message
         })
     }
 }
@@ -48,35 +56,45 @@ function click() {
     zagruzka();
     params.page += 1;
      try {
-        masPictures(params).then((res) => { gallery(res, params.page) }).catch((err) => { deleteContent('.div-js'); console.error(err) });
+         masPictures(params).then((res) => { gallery(res, params.page) }).catch((err) => {
+            deleteContent('.div-js');
+            iziToast.show({
+                color: '#ef4040',
+                position: 'topRight',
+                title: 'Error',
+                message: err.message
+            })
+         });
     } catch (err) {
         iziToast.show({
             color: '#ef4040',
             position: 'topRight',
             title: 'Error',
-            message: err
+            message: err.message
+        })
+    }
+    if (params.page+1 > params.maxPage) {
+        iziToast.show({
+            color: 'blue',
+            position: 'topRight',
+            title: 'OK',
+            message: "We're sorry, but you've reached the end of search results."
         })
     }
 }
 async function masPictures(search) {
-    return await getPictures(search).then(data => {
-        const arr = data.hits.map((rez) => {
-            const qaz = { webformatURL: rez.webformatURL, largeImageURL: rez.largeImageURL, tags: rez.tags, likes: rez.likes, views: rez.views, comments: rez.comments, downloads: rez.downloads, };
-            return qaz;
-        });
-        params.maxPage = Math.ceil(data.total / params.pageSize);
-        deleteContent('.div-js');
-        if (params.page < params.maxPage) {
-            buttonShow(); 
-        }
-        if (data.hits[0] == undefined) {
-            throw new Error('No images found');
-        }
-        return arr;
-    }).catch((err) => iziToast.show({
-                    color: '#ef4040',
-                    position: 'topRight',
-                    title: 'Error',
-                    message: 'No images found'
-                }))
+    const data = await getPictures(search);
+    if (data.total===0) {
+        throw new Error('No images found');
+    }
+    const arr = data.hits.map((rez) => {
+        const qaz = { webformatURL: rez.webformatURL, largeImageURL: rez.largeImageURL, tags: rez.tags, likes: rez.likes, views: rez.views, comments: rez.comments, downloads: rez.downloads, };
+        return qaz;
+    });
+    params.maxPage = Math.ceil(data.totalHits / params.pageSize);
+    deleteContent('.div-js');
+    if (params.page < params.maxPage) {
+        buttonShow(); 
+    }
+    return arr;
 }
